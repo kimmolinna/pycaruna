@@ -1,19 +1,45 @@
 ﻿# pycaruna
-Caruna API for Python
 
-The module includes the following functions:
+Basic Python implementation for interfacing with Caruna's API. It supports only basic methods, 
+but enough to extract electricity usage data for further processing.
 
-login (username,password)
-getCurrent (session)
-getMeteringPoints (session,customer)
-getConsHours (session,customer,meteringPoint,start_day,end_day)
-logout (session)
+Supported features:
 
+* Get user profile information
+* Get metering points
+* Get consumption data (daily/hourly, optioanlly divided by tariffs)
 
-Sample use of code:
+## Usage
 
-import pycaruna
-session=pycaruna.login("username","password")
-response=pycaruna.getConsHours(session,"0000000","000000","2018-04-01","2020-04-30")
-consumption = response.text
-response=pycaruna.logout(session)
+```python
+import json
+from datetime import date, datetime
+from pycaruna import Caruna, Resolution
+
+if __name__ == '__main__':
+    caruna = Caruna('you@example.com', 'password')
+    caruna.login()
+
+    customer = caruna.get_user_profile()
+    metering_points = caruna.get_metering_points(customer['username'])
+
+    end_time = datetime.combine(date.today(), datetime.min.time()).astimezone().isoformat()
+    start_time = datetime.combine(date.today().replace(day=1), datetime.min.time()).astimezone().isoformat()
+    metering_point = metering_points[0]['meteringPoint']['meteringPointNumber']
+
+    consumption = caruna.get_consumption(customer['username'],
+                                         metering_points[0]['meteringPoint']['meteringPointNumber'],
+                                         Resolution.DAYS, True,
+                                         start_time, end_time)
+    print(json.dumps(consumption))
+```
+
+The resources directory has examples of API response structures
+
+## Credits
+
+https://github.com/kimmolinna/pycaruna
+
+## License
+
+TODO
