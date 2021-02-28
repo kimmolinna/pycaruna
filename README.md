@@ -11,6 +11,16 @@ Supported features:
 
 ## Usage
 
+> TODO: Publish to PyPi
+
+You can use this package by adding the following to your `requirements.txt`:
+
+```
+git+https://github.com/Jalle19/pycaruna.git@750a93cd5ac7728a9d7b1a344b47f32d647644e5#egg=pycaruna==0.0.1
+```
+
+The library can then be used like this:
+
 ```python
 import json
 from datetime import date, datetime
