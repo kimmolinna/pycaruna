@@ -21,4 +21,8 @@ setuptools.setup(
     ],
     packages=setuptools.find_packages(),
     python_requires=">=3.8",
+    install_requires=[
+        "requests>=2",
+        "beautifulsoup4>=4.9"
+    ]
 )
