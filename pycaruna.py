@@ -58,8 +58,12 @@ def login (username,password):
     r = s.get(url)
 
     # Authorization/redirect #3
-    url = BeautifulSoup(r.content,'lxml').findAll('meta')[0]['content'][6:]
-    r = s.get(url)
+    spost_vars = {}
+    action = BeautifulSoup(r.text,'lxml').find('form')['action']
+    value = BeautifulSoup(r.text,'lxml').findAll('input')[1]['value']
+    spost_vars['resp']=value
+    r = s.post(action, data=spost_vars, headers=extraHeaders)
+
     return s  # session out
 def getCurrent(s):
     # get current user infromation
