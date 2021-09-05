@@ -44,7 +44,10 @@ if __name__ == '__main__':
     print(json.dumps(consumption))
 ```
 
-The resources directory has examples of API response structures
+The resources directory has examples of API response structures.
+
+Please note that the authentication procedure requires a lot of HTTP requests to be sent back and forth, so the 
+script is relatively slow.
 
 ## Credits
 
