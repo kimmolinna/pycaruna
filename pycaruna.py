@@ -58,8 +58,19 @@ def login (username,password):
     r = s.get(url)
 
     # Authorization/redirect #3
-    url = BeautifulSoup(r.content,'lxml').findAll('meta')[0]['content'][6:]
-    r = s.get(url)
+    soup = BeautifulSoup(r.content,'lxml')
+    action =soup.find('form')['action']
+    svars = {}
+    for var in soup.findAll('input',type="hidden"):
+        try:
+            svars[var['name']] = var['value']
+        except:
+            svars[var['name']] = ''
+    extraHeaders = { 
+        'Origin': 'https://authentication2.caruna.fi',
+        'Referer': 'https://authentication2.caruna.fi/portal/login'
+    } 
+    r = s.post(action, data=svars, headers=extraHeaders)
     return s  # session out
 def getCurrent(s):
     # get current user infromation
@@ -85,4 +96,5 @@ def logout(s):
     # logout
     # s as session
     r=s.get("https://authentication2.caruna.fi/portal/logout")
-    return r    #response out   
+    return r    #response out 
+  
