@@ -1,4 +1,5 @@
 import requests
+import pycaruna.utils as utils
 from bs4 import BeautifulSoup
 from enum import Enum
 
@@ -26,59 +27,50 @@ class Caruna:
         """
         s = requests.session()
 
-        # start page
+        # Start page. We can't go straight to the login page, we have to start here.
+        # Will perform some 302 redirects including some OAuth initiation until we get to a HTTP 200 (ng2Responder)
         r = s.get("https://energiaseuranta.caruna.fi/mobile/")
 
-        # first redirect
+        # Parse the <meta http-equiv="refresh"> URL and request it (ng2Postresponder)
         url = BeautifulSoup(r.content, 'lxml').findAll('meta')[0]['content'][6:]
         r = s.get("https://authentication2.caruna.fi" + url)
 
-        # login page
+        # Now we're at the actual login page. We need to find the <form>, get its "action" attribute, then modify it
+        # so it actually posts to the correct place. Normally the form submission and action mangling is done by
+        # JavaScript.
         c = r.content
         soup = BeautifulSoup(c, 'lxml')
-
-        # change to a correct action
-
         action = soup.find('form')['action'][1:][:11] + "IBehaviorListener.0-userIDPanel-loginWithUserID"
 
-        # get hidden inputs for the form
-        svars = {}
-        for var in soup.findAll('input', type="hidden"):
-            try:
-                svars[var['name']] = var['value']
-            except KeyError:
-                svars[var['name']] = ''
-
+        # Build form variables (all hidden variables must always be included)
+        svars = utils.get_hidden_form_vars(soup)
         svars['ttqusername'] = self.username
         svars['userPassword'] = self.password
         svars[soup.find('input', type="submit")['name']] = "1"
 
-        # Headers for Ajax and Wicket
-        extra_headers = {
+        # Post the form, with some extra headers that are required for proper response
+        r = s.post("https://authentication2.caruna.fi/portal" + action, data=svars, headers={
             'Wicket-Ajax': 'true',
             'Wicket-Ajax-BaseURL': 'login',
             'Wicket-FocusedElementId': 'loginWithUserID5',
             'X-Requested-With': 'XMLHttpRequest',
             'Origin': 'https://authentication2.caruna.fi',
             'Referer': 'https://authentication2.caruna.fi/portal/login'
-        }
+        })
 
-        # Post a form
-        r = s.post("https://authentication2.caruna.fi/portal" + action, data=svars, headers=extra_headers)
+        # Redirect to the location indicated by the Ajax-Location header
+        location = r.headers['Ajax-Location'][1:]
+        r = s.get("https://authentication2.caruna.fi/portal" + location)
 
-        # AJAX-page/redirect #1
-        text = r.text
-        text = text[text.find('CDATA[') + 7:]
-        url = text[:text.find(']')]
-        r = s.get("https://authentication2.caruna.fi/portal" + url)
-
-        # Redirect #2
+        # Parse the <meta http-equiv="refresh"> URL and request it (ngPostResponder)
         url = BeautifulSoup(r.content, 'lxml').findAll('meta')[0]['content'][6:]
         r = s.get(url)
 
-        # Authorization/redirect #3
-        url = BeautifulSoup(r.content, 'lxml').findAll('meta')[0]['content'][6:]
-        s.get(url)
+        # Parse the form and submit it (would normally be done by JavaScript). This will then finally redirect through
+        # some OAuth endpoints and in the end you'll be authenticated.
+        soup = BeautifulSoup(r.content, 'lxml')
+        action = soup.find('form')['action']
+        s.post(action, data=utils.get_hidden_form_vars(soup))
 
         self.session = s
 
