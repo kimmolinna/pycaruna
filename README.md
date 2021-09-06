@@ -55,4 +55,4 @@ https://github.com/kimmolinna/pycaruna
 
 ## License
 
-TODO
+MIT
