@@ -1,0 +1,200 @@
+[
+  {
+    "year": 2021,
+    "month": 9,
+    "day": 5,
+    "hour": null,
+    "utcOffset": null,
+    "yearForWeek": null,
+    "week": 35,
+    "dayOfWeek": 7,
+    "meteringPoint": null,
+    "timestamp": null,
+    "values": {
+      "EL_ENERGY_CONSUMPTION#0": {
+        "value": 36.65,
+        "status": 30,
+        "valueAsDouble": 36.65,
+        "valueAsFloat": 36.65,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      },
+      "EL_ENERGY_CONSUMPTION#4": {
+        "value": 36.65,
+        "status": 30,
+        "association": "NETWORK",
+        "valueAsDouble": 36.65,
+        "valueAsFloat": 36.65,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      }
+    },
+    "hourlyMeasured": true,
+    "serieTypeId": null
+  },
+  {
+    "year": 2021,
+    "month": 9,
+    "day": 6,
+    "hour": null,
+    "utcOffset": null,
+    "yearForWeek": null,
+    "week": 36,
+    "dayOfWeek": 1,
+    "meteringPoint": null,
+    "timestamp": null,
+    "values": {
+      "EL_ENERGY_CONSUMPTION#0": {
+        "value": 45.48,
+        "status": 30,
+        "valueAsDouble": 45.48,
+        "valueAsFloat": 45.48,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      },
+      "EL_ENERGY_CONSUMPTION#4": {
+        "value": 45.48,
+        "status": 30,
+        "association": "NETWORK",
+        "valueAsDouble": 45.48,
+        "valueAsFloat": 45.48,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      }
+    },
+    "hourlyMeasured": true,
+    "serieTypeId": null
+  },
+  {
+    "year": 2021,
+    "month": 9,
+    "day": 7,
+    "hour": null,
+    "utcOffset": null,
+    "yearForWeek": null,
+    "week": 36,
+    "dayOfWeek": 2,
+    "meteringPoint": null,
+    "timestamp": null,
+    "values": {
+      "EL_ENERGY_CONSUMPTION#0": {
+        "value": 35.3,
+        "status": 30,
+        "valueAsDouble": 35.3,
+        "valueAsFloat": 35.3,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      },
+      "EL_ENERGY_CONSUMPTION#4": {
+        "value": 35.3,
+        "status": 30,
+        "association": "NETWORK",
+        "valueAsDouble": 35.3,
+        "valueAsFloat": 35.3,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      }
+    },
+    "hourlyMeasured": true,
+    "serieTypeId": null
+  },
+  {
+    "year": 2021,
+    "month": 9,
+    "day": 8,
+    "hour": null,
+    "utcOffset": null,
+    "yearForWeek": null,
+    "week": 36,
+    "dayOfWeek": 3,
+    "meteringPoint": null,
+    "timestamp": null,
+    "values": {
+      "EL_ENERGY_CONSUMPTION#0": {
+        "value": 47.72,
+        "status": 30,
+        "valueAsDouble": 47.72,
+        "valueAsFloat": 47.72,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      },
+      "EL_ENERGY_CONSUMPTION#4": {
+        "value": 47.72,
+        "status": 30,
+        "association": "NETWORK",
+        "valueAsDouble": 47.72,
+        "valueAsFloat": 47.72,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      }
+    },
+    "hourlyMeasured": true,
+    "serieTypeId": null
+  },
+  {
+    "year": 2021,
+    "month": 9,
+    "day": 9,
+    "hour": null,
+    "utcOffset": null,
+    "yearForWeek": null,
+    "week": 36,
+    "dayOfWeek": 4,
+    "meteringPoint": null,
+    "timestamp": null,
+    "values": {
+      "EL_ENERGY_CONSUMPTION#0": {
+        "value": 30.07,
+        "status": 30,
+        "valueAsDouble": 30.07,
+        "valueAsFloat": 30.07,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      },
+      "EL_ENERGY_CONSUMPTION#4": {
+        "value": 30.07,
+        "status": 30,
+        "association": "NETWORK",
+        "valueAsDouble": 30.07,
+        "valueAsFloat": 30.07,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      }
+    },
+    "hourlyMeasured": true,
+    "serieTypeId": null
+  },
+  {
+    "year": 2021,
+    "month": 9,
+    "day": 10,
+    "hour": null,
+    "utcOffset": null,
+    "yearForWeek": null,
+    "week": 36,
+    "dayOfWeek": 5,
+    "meteringPoint": null,
+    "timestamp": null,
+    "values": {
+      "EL_ENERGY_CONSUMPTION#0": {
+        "value": 42.86,
+        "status": 30,
+        "valueAsDouble": 42.86,
+        "valueAsFloat": 42.86,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      },
+      "EL_ENERGY_CONSUMPTION#4": {
+        "value": 42.86,
+        "status": 30,
+        "association": "NETWORK",
+        "valueAsDouble": 42.86,
+        "valueAsFloat": 42.86,
+        "statusAsInteger": 30,
+        "statusAsSerieStatus": "MEASURED"
+      }
+    },
+    "hourlyMeasured": true,
+    "serieTypeId": null
+  }
+]
