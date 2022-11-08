@@ -1,10 +1,17 @@
-import sys
 import requests
 from bs4 import BeautifulSoup
 
-def login (username,password):
-    # login to Caruna+ as a registered user
-    # ("username","password") 
+
+def login_caruna (username: str,password: str):
+    """Login to Caruna+ as a registered user
+
+    Arguments:
+        username -- The username of the user for Caruna+\n
+        password -- The password of the user for Caruna+
+    Returns:
+        The session object for the user
+    """    
+
     s = requests.session()
 
     # start page
@@ -20,7 +27,7 @@ def login (username,password):
 
     # change to a correct action
 
-    action=soup.find('form')['action'][1:][:11]+"IBehaviorListener.0-userIDPanel-loginWithUserID"
+    action=soup.find('form')['action'][1:][:11]+"IBehaviorListener.0-userIDPanel-loginWithUserID"  # type: ignore
 
     # get hidden inputs for the form
     svars = {}
@@ -32,7 +39,7 @@ def login (username,password):
     
     svars['ttqusername']=username
     svars['userPassword']=password
-    svars[soup.find('input',type="submit")['name']]="1"
+    svars[soup.find('input',type="submit")['name']]="1"  # type: ignore
 
     # Headers for Ajax and Wicket
     extraHeaders = { 
@@ -59,7 +66,7 @@ def login (username,password):
 
     # Authorization/redirect #3
     soup = BeautifulSoup(r.content,'lxml')
-    action =soup.find('form')['action']
+    action =soup.find('form')['action']  # type: ignore
     svars = {}
     for var in soup.findAll('input',type="hidden"):
         try:
@@ -70,31 +77,59 @@ def login (username,password):
         'Origin': 'https://authentication2.caruna.fi',
         'Referer': 'https://authentication2.caruna.fi/portal/login'
     } 
-    r = s.post(action, data=svars, headers=extraHeaders)
-    return s  # session out
-def getCurrent(s):
-    # get current user infromation
-    # s as session
+    r = s.post(action, data=svars, headers=extraHeaders)  # type: ignore
+    return s
+def get_current(s : requests.Session)->str:
+    """Get the current user information
+
+    Arguments:
+        s -- The session object for the user
+
+    Returns:
+        The customer number for the user
+    """
     r=s.get("https://energiaseuranta.caruna.fi/api/users?current")
-    return r    # response out
-def getMeteringPoints (s,customer):
-    # get Metering point information
-    # s as session
-    # "customer" as customer number (string) 
+    return r.json()["username"]
+def get_metering_points (s : requests.Session,customer : str)->list[dict]:
+    """Get the metering points for the user
+
+    Arguments:
+        s -- The session object for the user\n
+        customer -- The customer number for the user
+    Returns:
+        The list of metering points[meteringPoinNumber,address] for the customer
+    """
     r=s.get("https://energiaseuranta.caruna.fi/api/customers/"+customer+"/meteringPointInformationWrappers")
-    return r
-def getConsHours (s,customer,meteringPoint,start_day,end_day):
-    # get consumption per hour
-    # s as session
-    # "customer" as customer number (string)
-    # "meteringPoint" as metering poin number (string)
-    # "start_day" as "2020-04-01"
-    # "end_day as "2020-04-30" 
-    r=s.get("https://energiaseuranta.caruna.fi/api/meteringPoints/ELECTRICITY/"+meteringPoint+"/series?products=EL_ENERGY_CONSUMPTION&resolution=MONTHS_AS_HOURS&customerNumber="+customer+"&startDate="+start_day+"T00:00:00-0700&endDate="+end_day+"T00:00:00-0700")
-    return r    # response out
-def logout(s):
-    # logout
-    # s as session
+    mps = []
+    for e in r.json()["entities"]:
+        mps.append([e["meteringPoint"][key] for key in ["meteringPointNumber","address"]])
+    return mps 
+def get_cons_hours (s : requests.Session,
+                    customer : str,metering_point : str,
+                    start_day : str,end_day : str)->list[dict]:
+    """Get the consumption data for the specified metering point
+
+    Arguments:
+        s -- Ths session object for the user\n
+        customer -- The customer number for the user\n
+        metering_point -- The metering point number for the customer\n
+        start_day -- Start day for the consumption data (YYYY-MM-DD)\n
+        end_day -- End day for the consumption data (YYYY-MM-DD)
+
+    Returns:
+        The list of consumption data for the specified metering point (JSON)
+    """ 
+    r=s.get("https://energiaseuranta.caruna.fi/api/meteringPoints/ELECTRICITY/"+metering_point+"/series?products=EL_ENERGY_CONSUMPTION&resolution=MONTHS_AS_HOURS&customerNumber="+customer+"&startDate="+start_day+"T00:00:00-0700&endDate="+end_day+"T00:00:00-0700")
+    return r.json()
+def logout_caruna(s):
+    """Logout from Caruna+
+
+    Arguments:
+        s -- The session object for the user
+
+    Returns:
+        The response from the logout
+    """
     r=s.get("https://authentication2.caruna.fi/portal/logout")
-    return r    #response out 
+    return r
   
