@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def login_caruna (username: str,password: str):
+def login_caruna (username: str,password: str|None):
     """Login to Caruna+ as a registered user
 
     Arguments:
@@ -47,7 +47,7 @@ def login_caruna (username: str,password: str):
         'Wicket-Ajax-BaseURL': 'login',
         'Wicket-FocusedElementId': 'loginWithUserID5',
         'X-Requested-With': 'XMLHttpRequest',
-        'Origin': 'https://authentication2.caruna.fi',
+ #       'Origin': 'https://authentication2.caruna.fi',
         'Referer': 'https://authentication2.caruna.fi/portal/login'
     }
     
@@ -99,9 +99,9 @@ def get_metering_points (s : requests.Session,customer : str)->list[dict]:
     Returns:
         The list of metering points[meteringPoinNumber,address] for the customer
     """
-    r=s.get("https://energiaseuranta.caruna.fi/api/customers/"+customer+"/meteringPointInformationWrappers")
+    r=s.get("https://energiaseuranta.caruna.fi/api/customers/"+customer+"/meteringPointInformationWrappers").json()
     mps = []
-    for e in r.json()["entities"]:
+    for e in r["entities"]:
         mps.append([e["meteringPoint"][key] for key in ["meteringPointNumber","address"]])
     return mps 
 def get_cons_hours (s : requests.Session,
@@ -119,7 +119,7 @@ def get_cons_hours (s : requests.Session,
     Returns:
         The list of consumption data for the specified metering point (JSON)
     """ 
-    r=s.get("https://energiaseuranta.caruna.fi/api/meteringPoints/ELECTRICITY/"+metering_point+"/series?products=EL_ENERGY_CONSUMPTION&resolution=MONTHS_AS_HOURS&customerNumber="+customer+"&startDate="+start_day+"T00:00:00-0700&endDate="+end_day+"T00:00:00-0700")
+    r=s.get("https://energiaseuranta.caruna.fi/api/meteringPoints/ELECTRICITY/"+metering_point+"/series?products=EL_ENERGY_CONSUMPTION&resolution=MONTHS_AS_HOURS&customerNumber="+customer+"&startDate="+start_day+"T00:00:00-0000&endDate="+end_day+"T00:00:00-0000")
     return r.json()
 def logout_caruna(s):
     """Logout from Caruna+
