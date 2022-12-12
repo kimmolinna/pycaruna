@@ -27,7 +27,7 @@ def login_caruna (username: str,password: str|None):
 
     # change to a correct action
 
-    action=soup.find('form')['action'][1:][:11]+"IBehaviorListener.0-userIDPanel-loginWithUserID"  # type: ignore
+    action=soup.find('form')['action'][1:][:11]+"IBehaviorListener.0-userIDPanel-usernameLogin-loginWithUserID"  # type: ignore
 
     # get hidden inputs for the form
     svars = {}
@@ -47,7 +47,7 @@ def login_caruna (username: str,password: str|None):
         'Wicket-Ajax-BaseURL': 'login',
         'Wicket-FocusedElementId': 'loginWithUserID5',
         'X-Requested-With': 'XMLHttpRequest',
- #       'Origin': 'https://authentication2.caruna.fi',
+        'Origin': 'https://authentication2.caruna.fi',
         'Referer': 'https://authentication2.caruna.fi/portal/login'
     }
     
