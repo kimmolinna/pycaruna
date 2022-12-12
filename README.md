@@ -14,9 +14,9 @@ Sample use of code:
 
 ```python
 import pycaruna
-session = pycaruna.login("username", "password")
+session = pycaruna.login_caruna("username", "password")
 customer = pycaruna.get_current(session)
 metering_points = pycaruna.get_metering_points(session, customer)
-consumption = pycaruna.get_cons_hours(session, customer, metering_point, "2022-11-01", "2022-11-30")
+consumption = pycaruna.get_cons_hours(session, customer, metering_points[0][0], "2022-11-01", "2022-11-30")
 response = pycaruna.logout(session)
 ```
