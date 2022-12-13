@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def login_caruna (username: str,password: str|None):
+def login_caruna (username: str,password: str)->requests.Session:
     """Login to Caruna+ as a registered user
 
     Arguments:
@@ -121,7 +121,7 @@ def get_cons_hours (s : requests.Session,
     """ 
     r=s.get("https://energiaseuranta.caruna.fi/api/meteringPoints/ELECTRICITY/"+metering_point+"/series?products=EL_ENERGY_CONSUMPTION&resolution=MONTHS_AS_HOURS&customerNumber="+customer+"&startDate="+start_day+"T00:00:00-0000&endDate="+end_day+"T00:00:00-0000")
     return r.json()
-def logout_caruna(s):
+def logout_caruna(s)->requests.Response:
     """Logout from Caruna+
 
     Arguments:
@@ -131,5 +131,4 @@ def logout_caruna(s):
         The response from the logout
     """
     r=s.get("https://authentication2.caruna.fi/portal/logout")
-    return r
-  
+    return r 
