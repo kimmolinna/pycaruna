@@ -40,7 +40,7 @@ class Caruna:
         # JavaScript.
         c = r.content
         soup = BeautifulSoup(c, 'lxml')
-        action = soup.find('form')['action'][1:][:11] + "IBehaviorListener.0-userIDPanel-loginWithUserID"
+        action = soup.find('form')['action'][1:][:11] + "IBehaviorListener.0-userIDPanel-usernameLogin-loginWithUserID"
 
         # Build form variables (all hidden variables must always be included)
         svars = utils.get_hidden_form_vars(soup)
