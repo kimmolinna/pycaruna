@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 import pycaruna
 
-start_day = datetime.now().strftime("%Y-%m")+"-01"
+start_day = (datetime.now() - relativedelta(months=1)).strftime("%Y-%m")+"-01"
 end_day = (datetime.now() + relativedelta(months=1)).strftime("%Y-%m")+"-01"
 session = pycaruna.login_caruna("kimmo.linna@gmail.com",keyring.get_password("caruna", "kimmo.linna@gmail.com"))
 customer = pycaruna.get_current(session)
