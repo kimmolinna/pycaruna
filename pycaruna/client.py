@@ -1,3 +1,4 @@
+from urllib.parse import urlparse, parse_qs
 import requests
 import pycaruna.utils as utils
 from bs4 import BeautifulSoup
@@ -7,6 +8,9 @@ from enum import Enum
 class Resolution(Enum):
     DAYS = 'MONTHS_AS_DAYS'
     HOURS = 'MONTHS_AS_HOURS'
+
+
+CARUNA_PLUS_API_BASE_URL = 'https://plus.caruna.fi/api'
 
 
 class Caruna:
@@ -19,6 +23,8 @@ class Caruna:
         self.username = username
         self.password = password
         self.session = None
+        self.token = None
+        self.user = None
         pass
 
     def login(self):
@@ -27,9 +33,14 @@ class Caruna:
         """
         s = requests.session()
 
-        # Start page. We can't go straight to the login page, we have to start here.
-        # Will perform some 302 redirects including some OAuth initiation until we get to a HTTP 200 (ng2Responder)
-        r = s.get("https://energiaseuranta.caruna.fi/mobile/")
+        # Start the authentication flow. This page will do some redirects and finally return a JSON object containing
+        # a URL we have to visit manually
+        r = s.post(CARUNA_PLUS_API_BASE_URL + '/authorization/login', json={
+            'language': 'fi',
+            'redirectAfterLogin': 'https://plus.caruna.fi/',
+        })
+
+        r = s.get(r.json()['loginRedirectUrl'])
 
         # Parse the <meta http-equiv="refresh"> URL and request it (ng2Postresponder)
         url = BeautifulSoup(r.content, 'lxml').findAll('meta')[0]['content'][6:]
@@ -40,7 +51,7 @@ class Caruna:
         # JavaScript.
         c = r.content
         soup = BeautifulSoup(c, 'lxml')
-        action = soup.find('form')['action'][1:][:11] + "IBehaviorListener.0-userIDPanel-usernameLogin-loginWithUserID"
+        action = "/wicket/page?3-1.IBehaviorListener.0-userIDPanel-usernameLogin-loginWithUserID"
 
         # Build form variables (all hidden variables must always be included)
         svars = utils.get_hidden_form_vars(soup)
@@ -66,13 +77,31 @@ class Caruna:
         url = BeautifulSoup(r.content, 'lxml').findAll('meta')[0]['content'][6:]
         r = s.get(url)
 
-        # Parse the form and submit it (would normally be done by JavaScript). This will then finally redirect through
-        # some OAuth endpoints and in the end you'll be authenticated.
+        # Parse the form and submit it (would normally be done by JavaScript). Normally it would be enough to have it
+        # automatically redirect through all the intermediate URLs, but we need to intercept a particular one in order
+        # to grab the Connect2id callback parameters
         soup = BeautifulSoup(r.content, 'lxml')
         action = soup.find('form')['action']
-        s.post(action, data=utils.get_hidden_form_vars(soup))
+        r = s.post(action, data=utils.get_hidden_form_vars(soup), allow_redirects=False)
+        r = s.get(r.headers['Location'], allow_redirects=False)
+        openid_login_return_url = r.headers['Location']
 
-        self.session = s
+        # Extract code, state and session_state
+        parsed_url = urlparse(openid_login_return_url)
+        parsed_query = parse_qs(parsed_url.query)
+        connect2id_params = {
+            'code': parsed_query['code'][0],
+            'state': parsed_query['state'][0],
+            'session_state': parsed_query['session_state'][0],
+        }
+
+        # Okay, we now have the Connect2id stuff. Now we can get an OAuth token which is needed for the actual API
+        # requests...
+        r = s.post(CARUNA_PLUS_API_BASE_URL + '/authorization/token', data=connect2id_params)
+        json_r = r.json()
+        self.token = json_r['token']
+
+        return json_r['user']
 
     def logout(self):
         """
