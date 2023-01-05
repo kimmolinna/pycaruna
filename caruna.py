@@ -7,11 +7,11 @@ from dateutil.relativedelta import relativedelta
 
 import pycaruna
 
-(year,month,day) = (datetime.now() - relativedelta(days=1)).strftime("%Y %m %d").split()
+(year,month,day) = (datetime.now() - relativedelta(days=3)).strftime("%Y %m %d").split()
 (session,info) = pycaruna.login_caruna("kimmo.linna@gmail.com",str(keyring.get_password("caruna", "kimmo.linna@gmail.com")))
 customer = info['user']['ownCustomerNumbers'][0]
 token = info['token']
-metering_points = pycaruna.get_metering_points(session, customer,token)
+metering_points = pycaruna.get_metering_points(session, token, customer)
 consumption = pycaruna.get_cons_hours(session, token, customer, metering_points[1][0], year, month, day)
 values = [(hour['timestamp'],hour['temperature'],hour['consumption']) for hour in consumption['results'][0]['data']]
 (timestamp_values,temperature_values,consumption_values) = [[row[i]for row in values] for i in range(3)]

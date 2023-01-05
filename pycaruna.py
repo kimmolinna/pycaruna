@@ -14,16 +14,13 @@ def login_caruna (username: str,password: str):
     """    
 
     s = requests.session()
-    r = s.post("https://plus.caruna.fi/api/authorization/login",
-        json = {"redirectAfterLogin":"https://plus.caruna.fi/","language":"fi"})
-    url = json.loads(r.text)["loginRedirectUrl"]
-    r = s.get(url)
-    c = r.content
-    soup = BeautifulSoup(c,'lxml')
+    url = json.loads(s.post("https://plus.caruna.fi/api/authorization/login",
+        json = {"redirectAfterLogin":"https://plus.caruna.fi/",
+        "language":"fi"}).content)["loginRedirectUrl"]
+    soup = BeautifulSoup(s.get(url).content,'lxml')
     post_url = soup.find('meta')['content'][6:] # type: ignore
     r = s.get("https://authentication2.caruna.fi" + str(post_url))
-    c = r.content
-    soup = BeautifulSoup(c,'lxml')
+    soup = BeautifulSoup(r.content,'lxml')
     action=soup.find('form')['action'][1:][:17]+"IBehaviorListener.0-userIDPanel-usernameLogin-loginWithUserID"  # type: ignore
     svars = {}
     for var in soup.findAll('input',type="hidden"):
@@ -34,8 +31,6 @@ def login_caruna (username: str,password: str):
     svars['ttqusername']=username
     svars['userPassword']=password
     svars[soup.find('input',type="submit")['name']]="1"  # type: ignore
-
-    # Headers for Ajax and Wicket
     extraHeaders = { 
         'Wicket-Ajax': 'true',
         'Wicket-Ajax-BaseURL': '.',
@@ -44,25 +39,14 @@ def login_caruna (username: str,password: str):
         'Origin': 'https://authentication2.caruna.fi',
         'Referer': 'https://authentication2.caruna.fi/portal/'
     }
-    
-    # Post a form
-    r = s.post("https://authentication2.caruna.fi/portal"+action, data=svars, headers=extraHeaders)
-
-    # AJAX-page/redirect #1
-    text = r.text
+    text = s.post("https://authentication2.caruna.fi/portal"+action, 
+        data=svars, headers=extraHeaders).text
     text = text[text.find('CDATA[')+7:]
     url = text[:text.find(']')]
     r = s.get("https://authentication2.caruna.fi/portal"+url)
-
-    c = r.content
-    soup = BeautifulSoup(c,'lxml')
-
-    # change to a correct action
-    url = soup.find('meta')['content'][6:]  # type: ignore
-    r = s.get(str(url))
-
-    # Authorization/redirect #3
     soup = BeautifulSoup(r.content,'lxml')
+    url = soup.find('meta')['content'][6:]  # type: ignore
+    soup = BeautifulSoup(s.get(str(url)).content,'lxml')
     action =soup.find('form')['action']  # type: ignore
     svars = {}
     for var in soup.findAll('input',type="hidden"):
@@ -70,19 +54,11 @@ def login_caruna (username: str,password: str):
             svars[var['name']] = var['value']
         except:
             svars[var['name']] = ''
-    extraHeaders = { 
-        'Origin': 'https://authentication2.caruna.fi',
-        'Referer': 'https://authentication2.caruna.fi/portal/login'
-    } 
-    r = s.post(action, data=svars,allow_redirects=False)  # type: ignore
-    r = s.get(r.headers['Location'],allow_redirects=False)
-    ids = r.headers['Location']
-    caruna_query = parse.urlsplit(ids).query
-    r = s.get(ids,headers=extraHeaders,allow_redirects=False)
-    r = s.post("https://plus.caruna.fi/api/authorization/token",data = caruna_query)
+    r = s.post(action, data=svars)  # type: ignore
+    r = s.post("https://plus.caruna.fi/api/authorization/token",data = r.request.path_url.split("?")[1])
     info = json.loads(r.text)
     return (s,info)    
-def get_metering_points (s : requests.Session,customer : str,token : str):
+def get_metering_points (s : requests.Session,token : str,customer : str):
     """Get the metering points for the user
 
     Arguments:
@@ -114,7 +90,7 @@ def get_cons_hours (s : requests.Session,token :str,
     """ 
     r=s.get("https://plus.caruna.fi/api/customers/"+customer+"/assets/"+
         metering_point+"/energy?year="+year+"&month="+month+
-        "&day="+day+"&timespan=hourly",
+        "&day="+day+"&timespan=daily",
         headers={'Authorization': 'Bearer '+token})
     return r.json()
 def logout_caruna(s)->requests.Response:
