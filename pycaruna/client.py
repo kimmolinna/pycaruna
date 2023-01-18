@@ -62,7 +62,7 @@ class CarunaPlus:
                              'year': year,
                              'month': month,
                              'day': day,
-                             'timespan': timespan,
+                             'timespan': timespan.value,
                          },
                          headers=utils.create_caruna_plus_headers(self.token))
 
