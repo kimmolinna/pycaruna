@@ -1,0 +1,20 @@
+{
+  "token": "eyXXX",
+  "expiresAt": 1673344144,
+  "user": {
+    "userName": "XXX",
+    "userType": "individual",
+    "email": "XXX",
+    "firstName": "XXX",
+    "lastName": "XXX",
+    "phoneNumber": "XXX",
+    "iamProfileUrl": "https://authentication2.caruna.fi/portal/userProfile",
+    "ownCustomerNumbers": [
+      "XXX"
+    ],
+    "representedCustomerNumbers": [],
+    "hashedUserId": "XXX",
+    "giosgVisitorParams": "XXX"
+  },
+  "redirectAfterLogin": "https://plus.caruna.fi/"
+}

@@ -1,0 +1,39 @@
+[
+  {
+    "type": "meteringPoint",
+    "id": "XXX",
+    "address": {
+      "id": "XXX",
+      "streetName": "XXX",
+      "houseNumber": "XXX",
+      "postOffice": "XXX",
+      "postalCode": "XXX",
+      "localityType": "postalAddress",
+      "type": "postalAddress",
+      "invoicingBaseCount": -1
+    },
+    "assetId": "XXX",
+    "gsrn": "XXX",
+    "contractId": "XXX",
+    "contractType": "energyDeliveringContract",
+    "contractProductId": "VS025",
+    "contractProductDesc": "Yösiirto 25 A",
+    "customerAddressId": "XXX",
+    "einvoiceAddressId": "XXX",
+    "isSupplierInvoiced": false,
+    "fuseSize": "3x25",
+    "group": "meteringPoint",
+    "networkId": "FSJ000",
+    "position": {
+      "lat": 60,
+      "lng": 24
+    },
+    "tabs": [
+      "meteringPointInfo",
+      "contractsAndInvoicing",
+      "consumption"
+    ],
+    "use": "Omakotitalot",
+    "customerId": "XXX"
+  }
+]
