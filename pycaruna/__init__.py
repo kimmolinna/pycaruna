@@ -1,1 +1,2 @@
-from .client import Caruna, Resolution
+from .client import CarunaPlus, TimeSpan
+from .authenticator import Authenticator

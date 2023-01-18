@@ -1,54 +1,41 @@
+import json
+import os
 import sys
 
 sys.path.append('../pycaruna')
-
-import json
-import os
-from datetime import date, datetime, timedelta
-from pycaruna import Caruna, Resolution
-
-
-def make_min_hour_datetime(date):
-    return datetime.combine(date, datetime.min.time())
-
-
-def make_max_hour_datetime(date):
-    return datetime.combine(date, datetime.max.time()).replace(microsecond=0)
-
+from pycaruna import CarunaPlus, TimeSpan
 
 if __name__ == '__main__':
-    username = os.getenv('CARUNA_USERNAME')
-    password = os.getenv('CARUNA_PASSWORD')
+    token = os.getenv('CARUNA_PLUS_TOKEN')
+    customer_id = os.getenv('CARUNA_CUSTOMER_ID')
 
-    if username is None or password is None:
-        raise Exception('CARUNA_USERNAME and CARUNA_PASSWORD must be defined')
+    if token is None or customer_id is None:
+        raise Exception('CARUNA_PLUS_TOKEN and CARUNA_CUSTOMER_ID must be defined')
 
-    client = Caruna(username, password)
-    client.login()
+    # Create a Caruna Plus client
+    client = CarunaPlus(token)
 
     # Get customer details and metering points so we can get the required identifiers
-    customer = client.get_user_profile()
-    metering_points = client.get_metering_points(customer['username'])
+    customer = client.get_user_profile(customer_id)
+    # print(customer)
 
-    # Fetch data from midnight 00:00 7 days ago to 23:59 today
-    start_time = make_min_hour_datetime(date.today() - timedelta(days=7)).astimezone().isoformat()
-    end_time = make_max_hour_datetime(date.today()).astimezone().isoformat()
+    # Get metering points, also known as "assets". Each asset has an "assetId" which is needed e.g. to
+    # retrieve energy consumption information for a metering point type asset.
+    metering_points = client.get_assets(customer_id)
+    # print(metering_points)
 
-    metering_point = metering_points[0]['meteringPoint']['meteringPointNumber']
+    # Get daily usage for the month of January 2023 for the first metering point. Yes, this means TimeSpan.MONTHLY. If
+    # you want hourly usage, use TimeSpan.DAILY.
+    asset_id = metering_points[0]['assetId']
+    january_energy = client.get_energy(customer_id, asset_id, TimeSpan.MONTHLY, 2023, 1, 1)
+    # print(january_energy)
 
-    consumption = client.get_consumption(customer['username'],
-                                         metering_points[0]['meteringPoint']['meteringPointNumber'],
-                                         Resolution.DAYS, True,
-                                         start_time, end_time)
+    # You're free to do whatever you want with the data, but for the sake of this example, let's filter out the future
+    # days (i.e. the days with zero consumption) and show just the consumption per day.
+    january_energy_filtered = [data for data in january_energy['results'][0]['data'] if data['consumption'] is not None]
+    january_energy_mapped = list(map(lambda data: {
+        'date': data['timestamp'],
+        'consumption': data['consumption'],
+    }, january_energy_filtered))
 
-    # Extract the relevant data, filter out days without values (usually the most recent datapoint)
-    filtered_consumption = [item for item in consumption if item['values']]
-    mapped_consumption = list(map(lambda item: {
-        'date': make_max_hour_datetime(
-            date.today().replace(year=item['year'], month=item['month'], day=item['day'])).isoformat(),
-        'kwh_total': item['values']['EL_ENERGY_CONSUMPTION#0']['value'],
-        'kwh_night': item['values']['EL_ENERGY_CONSUMPTION#2']['value'],
-        'kwh_day': item['values']['EL_ENERGY_CONSUMPTION#3']['value'],
-    }, filtered_consumption))
-
-    print(json.dumps(mapped_consumption))
+    print(json.dumps(january_energy_mapped, indent=2))

@@ -1,0 +1,45 @@
+{
+  "invoicingBases": [
+    {
+      "customerId": "XXX",
+      "id": "XXX",
+      "invoicesPerYear": 6,
+      "invoicingGroup": "XXX",
+      "distributionType": "customer-electronic",
+      "invoicingAddress": {
+        "localityType": "postalAddress",
+        "streetName": "XXX",
+        "houseNumber": "XXX",
+        "postOffice": "XXX",
+        "postalCode": "XXX",
+        "invoicingBaseCount": -1
+      },
+      "electronicInvoicingAddress": {
+        "type": "customer-electronic",
+        "operator": "XXX"
+      }
+    }
+  ],
+  "contracts": [
+    {
+      "invoicingBaseId": "XXX",
+      "id": "XXX",
+      "assetId": "XXX",
+      "customerId": "XXX",
+      "name": "XXX",
+      "productDescription": "Yösiirto 25 A",
+      "product": {
+        "status": "editable",
+        "productType": "nightly",
+        "suffix": "3x25 A"
+      },
+      "productId": "XXX",
+      "startDate": "XXX",
+      "endDate": "9999-12-31T23:59:59Z",
+      "taxClass": "1",
+      "type": "energyDeliveringContract",
+      "typeId": "XXX",
+      "currentSeller": "XXX"
+    }
+  ]
+}

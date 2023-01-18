@@ -1,0 +1,57 @@
+{
+  "id": "XXX",
+  "name": "XXX",
+  "businessId": "",
+  "phone": "XXX",
+  "postalAddress": {
+    "id": "XXX",
+    "streetName": "XXX",
+    "houseNumber": "XXX",
+    "postOffice": "XXX",
+    "postalCode": "XXX",
+    "localityType": "postalAddress",
+    "type": "postalAddress",
+    "invoicingBaseCount": 1
+  },
+  "billingAddresses": [
+    {
+      "id": "XXX",
+      "streetName": "XXX",
+      "houseNumber": "XXX",
+      "postOffice": "XXX",
+      "postalCode": "XXX",
+      "localityType": "postalAddress",
+      "type": "postalAddress",
+      "invoicingBaseCount": 1
+    }
+  ],
+  "marketingPermissions": {
+    "email": false,
+    "sms": false,
+    "ban": false
+  },
+  "contactingPermissions": {
+    "email": false
+  },
+  "einvoiceAddresses": [
+    {
+      "id": "XXX",
+      "key": "XXX",
+      "address": "XXX",
+      "operator": "XXX",
+      "operator2": "XXX",
+      "paymentInstruction": "XXX",
+      "type": "customer-electronic",
+      "state": "added"
+    }
+  ],
+  "representedCustomer": false,
+  "jointCustomer": true,
+  "isMissingRequiredInfo": true,
+  "language": "fi",
+  "defaultRefundAccount": null,
+  "defaultRefundAccountBIC": null,
+  "disabledSurveys": [
+    "hloasiakascarunaplusfin"
+  ]
+}
