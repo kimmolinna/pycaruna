@@ -13,7 +13,7 @@ customer = info['user']['ownCustomerNumbers'][0]
 token = info['token']
 metering_points = pycaruna.get_metering_points(session, token, customer)
 consumption = pycaruna.get_cons_hours(session, token, customer, metering_points[1][0], year, month, day)
-values = [(hour['timestamp'],hour['temperature'],hour['consumption']) for hour in consumption['results'][0]['data']]
+values = [(hour['timestamp'],hour['temperature'],hour['totalConsumption']) for hour in consumption]
 (timestamp_values,temperature_values,consumption_values) = [[row[i]for row in values] for i in range(3)]
 df = pd.DataFrame.from_dict({"timestamp":timestamp_values,
     "temperature":temperature_values,

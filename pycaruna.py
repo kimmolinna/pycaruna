@@ -21,7 +21,7 @@ def login_caruna (username: str,password: str):
     post_url = soup.find('meta')['content'][6:] # type: ignore
     r = s.get("https://authentication2.caruna.fi" + str(post_url))
     soup = BeautifulSoup(r.content,'lxml')
-    action=soup.find('form')['action'][1:][:17]+"IBehaviorListener.0-userIDPanel-usernameLogin-loginWithUserID"  # type: ignore
+    action=soup.find('form')['action'][1:][:17]+"0-userIDPanel-usernameLogin-loginWithUserID"  # type: ignore
     svars = {}
     for var in soup.findAll('input',type="hidden"):
         try:
@@ -93,7 +93,7 @@ def get_cons_hours (s : requests.Session,token :str,
         "&day="+day+"&timespan=daily",
         headers={'Authorization': 'Bearer '+token})
     return r.json()
-def logout_caruna(s)->requests.Response:
+def logout_caruna(s : requests.Session):
     """Logout from Caruna+
 
     Arguments:
@@ -102,5 +102,4 @@ def logout_caruna(s)->requests.Response:
     Returns:
         The response from the logout
     """
-    r=s.get("https://authentication2.caruna.fi/portal/logout")
-    return r 
+    return s.get('https://authentication2.caruna.fi/portal/').ok
