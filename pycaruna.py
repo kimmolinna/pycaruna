@@ -21,7 +21,7 @@ def login_caruna (username: str,password: str):
     post_url = soup.find('meta')['content'][6:] # type: ignore
     r = s.get("https://authentication2.caruna.fi" + str(post_url))
     soup = BeautifulSoup(r.content,'lxml')
-    action=soup.find('form')['action'][1:][:17]+"0-userIDPanel-usernameLogin-loginWithUserID"  # type: ignore
+    action=soup.find('form')['action'][1:][:11]+"0-userIDPanel-usernameLogin-loginWithUserID"  # type: ignore
     svars = {}
     for var in soup.findAll('input',type="hidden"):
         try:
