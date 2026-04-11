@@ -5,6 +5,8 @@ import keyring
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
+# Note: Ensure awswrangler is installed with: pip install awswrangler
+
 import pycaruna
 
 (year,month,day) = (datetime.now() - relativedelta(days=3)).strftime("%Y %m %d").split()
