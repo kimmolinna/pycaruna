@@ -1,6 +1,22 @@
 ﻿# pycaruna
 Caruna API for Python
 
+## Install
+
+```bash
+pip install -r requirements.txt
+```
+
+Runtime dependencies:
+
+- `requests`
+- `beautifulsoup4`
+- `lxml` — BeautifulSoup parser used by `login_caruna`. Login fails without it.
+
+`caruna.py` is a separate example that also needs `keyring`, `pandas`, `python-dateutil`, and `awswrangler`. Those are not required to use the library.
+
+## Functions
+
 The module includes the following functions:
 
 - `login_caruna (username: str,password: str)`
