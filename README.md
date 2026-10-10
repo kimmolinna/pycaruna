@@ -1,6 +1,8 @@
 ﻿# pycaruna
 Caruna API for Python
 
+Reads electricity consumption from Caruna+. Login follows Caruna's web sign-in and parses the Wicket login page, so it breaks when Caruna changes that form.
+
 ## Install
 
 ```bash
